@@ -11,12 +11,14 @@
             "webhook": {
                 "id": "DISCORD WEBHOOK ID HERE",
                 "token": "DISCORD WEBHOOK TOKEN HERE"
-            }
+            },
+            "announcement": false
         }
     },
     "discord": {
         "DISCORD CHANNEL ID HERE": {
-            "revolt_channel_id": "REVOLT CHANNEL ID HERE"
+            "revolt_channel_id": "REVOLT CHANNEL ID HERE",
+            "announcement": false
         }
     }
 }

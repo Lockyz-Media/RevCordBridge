@@ -1,4 +1,4 @@
-const { Client: DiscordClient, GatewayIntentBits, AttachmentBuilder, Events: DiscordEvents, WebhookClient, ActivityType } = require("discord.js");
+const { Client: DiscordClient, GatewayIntentBits, AttachmentBuilder, Events: DiscordEvents, WebhookClient, ActivityType, ChannelType } = require("discord.js");
 const { Client: RevoltClient } = require("revolt.js");
 const axios = require('axios');
 const config = require("./config.json");
@@ -70,38 +70,73 @@ revoltClient.on("message", async (message) => {
 
                 const messageAuthor = message.author;
                 const content = message.content || 'No Message Provided';
+                if(message.attachments) {
+                    // Handle attachments: loop through each attachment and process
+                    const attachments = await Promise.all(
+                        message.attachments.map(async (att) => {
+                            return await fetchRevoltImage(att);
+                        })
+                    );
 
-                // Handle attachments: loop through each attachment and process
-                const attachments = await Promise.all(
-                    message.attachments.map(async (att) => {
-                        return await fetchRevoltImage(att);
-                    })
-                );
+                    // Filter out any null values in the attachments array
+                    const validAttachments = attachments.filter((att) => att !== null);
 
-                // Filter out any null values in the attachments array
-                const validAttachments = attachments.filter((att) => att !== null);
+                    if (validAttachments.length > 0) {
+                        try {
+                            var username
+                            if(channel_config.announcement === true) {
+                                username = `Announcement from Revolt - ${messageAuthor.username}`
+                            } else {
+                                username = `Revolt - ${messageAuthor.username}`
+                            }
 
-                if (validAttachments.length > 0) {
-                    try {
-                        await webhookClient.send({
-                            content: content,
-                            username: messageAuthor.username,
-                            avatarURL: messageAuthor.avatarURL,
-                            files: validAttachments, // Send only valid attachments
-                        });
-                        console.log('Image sent to Discord!');
-                    } catch (sendError) {
-                        console.error('Error sending image to Discord:', sendError.message || sendError);
+                            if(message.content) {
+                                await webhookClient.send({
+                                    content: content,
+                                    username: username,
+                                    avatarURL: messageAuthor.avatarURL,
+                                    files: validAttachments
+                                });
+                            } else {
+                                await webhookClient.send({
+                                    username: username,
+                                    avatarURL: messageAuthor.avatarURL,
+                                    files: validAttachments
+                                });
+                            }
+                        } catch (sendError) {
+                            console.error('Error sending image to Discord:', sendError.message || sendError);
+                        }
+                    } else {
+                        try {
+                            if(message.content) {
+                                await webhookClient.send({
+                                    content: content,
+                                    username: `Revolt - ${messageAuthor.username}`,
+                                    avatarURL: messageAuthor.avatarURL,
+                                });
+                            } else {
+                                console.error(`Revolt: Message being sent without content!`)
+                            }
+                        } catch (sendError) {
+                            console.error('Error sending message to Discord:', sendError.message || sendError);
+                        }
                     }
                 } else {
-                    try {
+                    var username
+                    if(channel_config.announcement === true) {
+                        username = `Announcement from Revolt - ${messageAuthor.username}`
+                    } else {
+                        username = `Revolt - ${messageAuthor.username}`
+                    }
+                    if(message.content) {
                         await webhookClient.send({
                             content: content,
-                            username: messageAuthor.username,
-                            avatarURL: messageAuthor.avatarURL,
+                            username: username,
+                            avatarURL: messageAuthor.avatarURL
                         });
-                    } catch (sendError) {
-                        console.error('Error sending message to Discord:', sendError.message || sendError);
+                    } else {
+                        console.error(`Revolt: Message being sent without content!`)
                     }
                 }
             }
@@ -124,11 +159,16 @@ discordClient.on(DiscordEvents.MessageCreate, async message => {
             // Prepare username and message content
             const authorUsername = message.author.username;
             const content = message.cleanContent || 'No message content.';
+            var revoltMessage
 
-            // Prepare the content to send to Revolt
-            let revoltMessage = `# New Message from Discord\n` +
-                                `**User:** ${authorUsername}\n` + 
-                                `**Message:** ${content}`;
+            if(channel_config.announcement === true) {
+                // Prepare the content to send to Revolt
+                revoltMessage = `${content}`;
+            } else {
+                // Prepare the content to send to Revolt
+                revoltMessage = `**Discord: ${authorUsername}**\n` +
+                                `${content}`;
+            }
 
             let sentMessage;
             try {
