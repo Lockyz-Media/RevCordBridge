@@ -12,7 +12,7 @@ RevCordBridge is a bridge between Discord and Revolt, designed to sync messages 
 ## Requirements
 
 - Node.js v16 or higher.
-- [discord.js](https://discord.js.org/) v14.0.0 or higher.
+- [discord.js](https://discord.js.org/) v14.19.3 or higher.
 - [revolt.js](https://github.com/revoltchat/revolt.js) v6.0.19 (due to compatibility reasons).
 - Axios for HTTP requests (`npm install axios`).
 - [uuid](https://www.npmjs.com/package/uuid) for unique ID generation (`npm install uuid`).
@@ -32,34 +32,7 @@ RevCordBridge is a bridge between Discord and Revolt, designed to sync messages 
     npm install
     ```
 
-3. Create a `config.json` file in the root of the project, based on the provided example below.
-
-### Example `config.json`
-
-```json
-{
-  "tokens": {
-    "discord": "YOUR_DISCORD_BOT_TOKEN",
-    "revolt": "YOUR_REVOLT_BOT_TOKEN"
-  },
-  "activity": {
-    "text": "Your custom status text here!"
-  },
-  "discord": {
-    "123456789012345678": {
-      "revolt_channel_id": "REVOLT_CHANNEL"
-    }
-  },
-  "revolt": {
-    "REVOLT_CHANNEL": {
-      "webhook": {
-        "id": "YOUR_DISCORD_WEBHOOK_ID",
-        "token": "YOUR_DISCORD_WEBHOOK_TOKEN"
-      }
-    }
-  }
-}
-```
+3. Rename `config.example.json` to `config.json`.
 - Replace `YOUR_DISCORD_BOT_TOKEN` with your Discord bot token.
 - Replace `YOUR_REVOLT_BOT_TOKEN` with your Revolt bot token.
 - Replace `REVOLT_CHANNEL` with the revolt channel you'd like to use.
