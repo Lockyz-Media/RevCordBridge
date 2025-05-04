@@ -11,26 +11,26 @@ RevCordBridge is a bridge between Discord and Revolt, designed to sync messages 
 
 ## Requirements
 
-- Node.js v16 or higher.
+- Node.js v22 or higher.
 - [discord.js](https://discord.js.org/) v14.19.3 or higher.
 - [revolt.js](https://github.com/revoltchat/revolt.js) v6.0.19 (due to compatibility reasons).
-- Axios for HTTP requests (`npm install axios`).
-- [uuid](https://www.npmjs.com/package/uuid) for unique ID generation (`npm install uuid`).
+- Axios for HTTP requests.
+- [uuid](https://www.npmjs.com/package/uuid) for unique ID generation.
 
 ## Setup
 
 1. Clone this repository:
 
-    ```bash
-    git clone https://github.com/Lockyz-Media/RevCordBridge.git
-    cd RevCordBridge
-    ```
+```bash
+git clone https://github.com/Lockyz-Media/RevCordBridge.git
+cd RevCordBridge
+```
 
 2. Install dependencies:
 
-    ```bash
-    npm install
-    ```
+```bash
+npm install
+```
 
 3. Rename `config.example.json` to `config.json`.
 - Replace `YOUR_DISCORD_BOT_TOKEN` with your Discord bot token.
@@ -39,7 +39,10 @@ RevCordBridge is a bridge between Discord and Revolt, designed to sync messages 
 - Configure Revolt channel and Discord webhook settings under the revolt and discord objects.
 
 ## Usage
-1) Run the bot: `node index.js`
+1) Run the bot:
+```bash
+node index.js
+```
 2) When the bot starts up, it will log in to both Discord and Revolt, and set a custom status on Discord.
 3) The bot will sync messages from Discord to Revolt and vice versa:
   - Messages sent on Discord will appear in the configured Revolt channel.
